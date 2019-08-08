@@ -208,17 +208,16 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="2.jpg" />
     <Content Include="botchat.css" />
     <Content Include="botchat.js" />
     <Content Include="Chatbot\botchat.css" />
     <Content Include="Chatbot\botchat.js" />
     <Content Include="Chatbot\CS.html" />
     <Content Include="default.htm" />
-    <Content Include="download.png" />
     <Content Include="Global.asax" />
     <Content Include="HtmlPage1.html" />
     <Content Include="images.png" />
-    <Content Include="property.jpg" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
