@@ -224,6 +224,18 @@ namespace Microsoft.Bot.Sample.LuisBot
 
             createCase(complaint, customerName, phone, email);
 
+            var activity2 = context.Activity as Activity;
+            if (activity2.Type == ActivityTypes.Message)
+            {
+                var connector2 = new ConnectorClient(new System.Uri(activity2.ServiceUrl));
+                var isTyping2 = activity2.CreateReply("Nerdibot is thinking...");
+                isTyping2.Type = ActivityTypes.Typing;
+                await connector2.Conversations.ReplyToActivityAsync(isTyping2);
+
+                // DEMO: I've added this for demonstration purposes, so we have time to see the "Is Typing" integration in the UI. Else the bot is too quick for us :)
+                Thread.Sleep(3000);
+            }
+
             PromptDialog.Text(
           context: context,
           resume: AnythingElseHandler,
