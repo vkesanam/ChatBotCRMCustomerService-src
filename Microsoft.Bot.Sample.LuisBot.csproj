@@ -169,6 +169,9 @@
   <ItemGroup>
     <Content Include="botchat.css" />
     <Content Include="botchat.js" />
+    <Content Include="Chatbot\botchat.css" />
+    <Content Include="Chatbot\botchat.js" />
+    <Content Include="Chatbot\CS.html" />
     <Content Include="default.htm" />
     <Content Include="download.png" />
     <Content Include="Global.asax" />

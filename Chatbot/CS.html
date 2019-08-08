@@ -1,0 +1,27 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <!--<link href="https://cdn.botframework.com/botframework-webchat/latest/botchat.css" rel="stylesheet" />-->
+    <link href="botchat.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="bot" />
+    <!--<script src="https://cdn.botframework.com/botframework-webchat/latest/botchat.js"></script>-->
+    <script src="botchat.js"></script>
+    <script>
+        // const speechOptions = {
+        //     speechRecognizer: new BotChat.Speech.BrowserSpeechRecognizer(),
+        //     speechSynthesizer: new BotChat.Speech.BrowserSpeechSynthesizer()
+        // };
+
+        BotChat.App({
+            // speechOptions: speechOptions,
+            directLine: { secret: "eswv1mrPizw.fAqaSPBqlBay4GRXugoBPGGxI-xnDSI0pb5zs7USFzQ" },
+        user: { id: 'Guest' },
+        bot: { id: 'botid' },
+        resize: 'detect'
+      }, document.getElementById("bot"));
+    </script>
+</body>
+</html>
