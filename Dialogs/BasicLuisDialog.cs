@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Net;
 using System.Net.Http;
+using System.ServiceModel.Description;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
+using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Client;
+using Entity = Microsoft.Xrm.Sdk.Entity;
 
 namespace Microsoft.Bot.Sample.LuisBot
 {
@@ -195,6 +201,7 @@ namespace Microsoft.Bot.Sample.LuisBot
             email = response;
 
 
+
             await context.PostAsync($@"Your request has been logged. Our customer service team will get back to you shortly.
                                     {Environment.NewLine}Your service request  summary:
                                     {Environment.NewLine}Reference Number: CAS-1456,
@@ -203,12 +210,55 @@ namespace Microsoft.Bot.Sample.LuisBot
                                     {Environment.NewLine}Phone Number: {phone},
                                     {Environment.NewLine}Email: {email}");
 
+            var activity = context.Activity as Activity;
+            if (activity.Type == ActivityTypes.Message)
+            {
+                var connector = new ConnectorClient(new System.Uri(activity.ServiceUrl));
+                var isTyping = activity.CreateReply("Nerdibot is thinking...");
+                isTyping.Type = ActivityTypes.Typing;
+                await connector.Conversations.ReplyToActivityAsync(isTyping);
+
+                // DEMO: I've added this for demonstration purposes, so we have time to see the "Is Typing" integration in the UI. Else the bot is too quick for us :)
+                Thread.Sleep(2500);
+            }
+
+            createCase(complaint, customerName, phone, email);
+
             PromptDialog.Text(
           context: context,
           resume: AnythingElseHandler,
           prompt: "Is there anything else that I could help?",
           retry: "Sorry, I don't understand that.");
         }
+
+        private void createCase(string complaint, string customerName, string phone, string email)
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
+
+            ClientCredentials credentials = new ClientCredentials();
+            credentials.UserName.UserName = "admin@CRM970111.onmicrosoft.com";
+            credentials.UserName.Password = "276HhC832U";
+            Uri OrganizationUri = new Uri("https://crm970111.api.crm4.dynamics.com/XRMServices/2011/Organization.svc");
+
+            Uri HomeRealUir = null;
+            Guid CaseGuid = new Guid();
+            using (OrganizationServiceProxy serviceProxy = new OrganizationServiceProxy(OrganizationUri, HomeRealUir, credentials, null))
+            {
+                IOrganizationService service = (IOrganizationService)serviceProxy;
+                serviceProxy.EnableProxyTypes();
+
+                Entity Case = new Entity("incident");
+                Case["title"] = complaint;
+                Entity Account = new Entity("account");
+                Account["name"] = customerName;
+                Account["telephone1"] = phone;
+                Account["emailaddress1"] = email;
+                Guid AccountGuid = service.Create(Account);
+                Case["customerid"] = new EntityReference("account", AccountGuid);
+                CaseGuid = service.Create(Case);
+            }
+        }
+
         public async Task AnythingElseHandler(IDialogContext context, IAwaitable<string> argument)
         {
 
