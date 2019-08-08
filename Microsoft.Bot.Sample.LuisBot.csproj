@@ -218,6 +218,7 @@
     <Content Include="Global.asax" />
     <Content Include="HtmlPage1.html" />
     <Content Include="images.png" />
+    <Content Include="property.jpg" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
